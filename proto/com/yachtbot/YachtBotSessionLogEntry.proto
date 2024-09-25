@@ -1,0 +1,315 @@
+/**
+ * File: YachtBotSessionLogEntry
+ * Project: YachtBot
+ *
+ * Version 0.9.0
+ *
+ * Author Stephen Markham
+ * Date 26/02/2019
+ * Copyright 2019, Igtimi Ltd., all rights reserved.
+ * Description
+ *   Schema for Igtimi Session Logs as defined by the YachtBot application.
+ *
+ *
+ * Note: Versions < 1.0 are liable to breaking changes (including structure)
+ *        and therefore implementations based of these should proceed with caution.
+ *        After 1.0 all changes *should* be backwards compatible.
+ */
+
+syntax = "proto3";
+option optimize_for = SPEED;
+
+package com.yachtbot;
+
+// This can be used by the application. The value
+// is that used in the session type at the Igtimi level
+enum SessionType {
+    SessionType_Container = 0;
+    SessionType_Regatta = 1;
+    SessionType_Day = 2;
+    SessionType_Race = 3;
+}
+
+// Main Entry Type
+message Entry {
+    oneof entry {
+        Entity entity = 1 [json_name = "entity"];
+        Shape shape = 2 [json_name = "shape"];
+        Area area = 3 [json_name = "area"];
+        Race race = 4 [json_name = "race"];
+        RaceCourse race_course = 5 [json_name = "raceCourse"];
+        BoatClass boat_class = 6 [json_name = "boatClass"];
+        RuleSet rule_set = 7 [json_name = "ruleSet"];
+        RaceState race_state = 8 [json_name = "raceState"];
+        Location target_location = 9 [json_name = "targetLocation"];
+    }
+}
+
+//Top Level Types
+
+message Entity {
+
+    oneof source {
+        Device device = 1 [json_name = "device"];
+        Location static_location = 2 [json_name = "staticLocation"];
+    }
+
+    repeated string shape_id = 3 [json_name = "shapeID"];
+    string target_location_id = 4 [json_name = "targetLocationID"];
+    string colour = 5 [json_name = "colour"];
+
+    oneof entity {
+        GenericObject generic_object = 6 [json_name = "genericObject"];
+        Boat boat = 7 [json_name = "boat"];
+        Person person = 8 [json_name = "person"];
+        Buoy buoy = 9 [json_name = "buoy"];
+        Helicopter helicopter = 10 [json_name = "helicopter"];
+        UAV uav = 11 [json_name = "uav"];
+        Asset asset = 12 [json_name = "asset"];
+    }
+
+}
+
+message Shape {
+    string name = 1 [json_name = "name"];
+    string geometry = 2 [json_name = "geometry"]; //WKT. Metres from origin
+    string shape_file = 3 [json_name = "shapeFile"]; //Optional extra
+    ShapeUsage usage = 4 [json_name = "usage"];
+}
+
+message Area {
+    string name = 1 [json_name = "name"];
+    string colour = 2 [json_name = "colour"]; //hex code #000000 -> #FFFFFF
+    float fill = 3 [json_name = "fill"]; //alpha 0-1.0f
+    string geometry = 4 [json_name = "geometry"]; //WKT format where SRID = 4326
+}
+
+message Race {
+    string name = 1 [json_name = "name"];
+    string course_id = 2 [json_name = "courseID"];
+    uint64 start_time = 3 [json_name = "startTime"]; //date time js epoch
+    repeated RaceParticipant participants = 4 [json_name = "participants"];
+    string stateID = 5 [json_name = "stateID"];
+    RaceType race_type = 6 [json_name = "raceType"];
+    string rule_set_id = 7 [json_name = "ruleSetID"];
+}
+
+
+message RaceCourse {
+    string name = 1 [json_name = "name"];
+    string boundary_id = 2 [json_name = "boundaryID"];
+    Gate start_line = 3 [json_name = "startLine"];
+    repeated RaceMark course_sequence = 4 [json_name = "courseSequence"];
+    Gate finish_line = 5 [json_name = "finishLine"];
+    double course_angle = 6 [json_name = "courseAngle"]; //degrees TRUE
+    double course_length = 7 [json_name = "courseLength"]; //in nm
+}
+
+// Object Types
+
+message Device {
+
+    message SensorLocation {
+        string name = 1 [json_name = "name"];
+        uint32 source_id = 2 [json_name = "sourceID"];
+        repeated uint32 data_type = 3 [json_name = "dataType"];
+        Vertex location = 4 [json_name = "location"];
+    }
+
+    string device_id = 1 [json_name = "deviceID"];
+
+    Vertex device_location = 2 [json_name = "deviceLocation"];
+
+    // If no sensor locations are provided the device_location will be used (if present).
+    // This would be the use case of just a single tracker on board the boat.
+    repeated SensorLocation sensor_location = 3 [json_name = "sensorLocation"];
+}
+
+message GenericObject {
+    string name = 1 [json_name = "name"];
+}
+
+message Boat {
+    string name = 1 [json_name = "name"];
+    BoatType type = 2 [json_name = "type"];
+    string class_id = 3 [json_name = "classID"];
+    uint64 number = 4 [json_name = "number"];
+    string short_name = 5 [json_name = "shortName"];
+    string country = 6 [json_name = "country"];
+    repeated CrewMember crew = 7 [json_name = "crew"];
+}
+
+message Person {
+    string first_name = 1 [json_name = "firstName"];
+    string last_name = 2 [json_name = "lastName"];
+    string nationality = 3 [json_name = "nationality"];
+}
+
+message Buoy {
+    string name = 1 [json_name = "name"];
+}
+
+message Helicopter {
+    string name = 1 [json_name = "name"];
+    repeated CrewMember crew = 2 [json_name = "crew"];
+}
+
+message UAV {
+    string name = 1 [json_name = "name"];
+    repeated CrewMember crew = 2 [json_name = "crew"];
+}
+
+message Asset {
+    string id = 1 [json_name = "id"];
+    string name = 2 [json_name = "name"];
+}
+
+// Generic Helpers
+
+// WGS84
+message Location {
+    double latitude = 1 [json_name = "lat"];
+    double longitude = 2 [json_name = "lon"];
+    double altitude = 3 [json_name = "alt"];
+}
+
+// Metres
+message Vertex {
+    double x = 1 [json_name = "x"];
+    double y = 2 [json_name = "y"];
+    double z = 3 [json_name = "z"];
+}
+
+// Boat Helpers
+
+enum CrewRole {
+    Role_Unknown = 0;
+    Role_Skipper = 1;
+    Role_Tactician = 2;
+    Role_Helmsman = 3;
+    Role_Trimmer = 4;
+    Role_Grinder = 5;
+    Role_Pilot = 6;
+}
+
+enum BoatType {
+    BoatType_Unknown = 0;
+    BoatType_Race = 1;
+    BoatType_Committee = 2;
+    BoatType_Umpire = 3;
+    BoatType_Official = 4;
+    BoatType_MarkSet = 5;
+    BoatType_Chase = 6;
+    BoatType_Media = 7;
+    BoatType_Helper = 8;
+}
+
+message BoatClass {
+    string name = 1 [json_name = "name"];
+    repeated string shape_id = 2 [json_name = "shapeID"];
+    string logo_url = 3 [json_name = "logoURL"];
+    string polar_url = 4 [json_name = "polarURL"];
+}
+
+// Metres
+message RuleSet {
+    double mark_zone_size = 1 [json_name = "maxZoneSize"];
+    double course_zone_size = 2 [json_name = "courseZoneSize"];
+    double exclusion_zone_size = 3 [json_name = "exclusionZoneSize"];
+    uint64 max_leg_one_time_ms = 4 [json_name = "maxLegOneTimeMS"];
+    uint64 max_race_time_ms = 5 [json_name = "maxRaceTimeMS"];
+
+    //The following times are given as the number of milliseconds before the start time
+    uint64 warning_signal_ms = 6 [json_name = "warningSignalMS"]; 
+    uint64 preparatory_signal_ms = 7 [json_name = "preparatorySignalMS"];
+    uint64 end_pre_start_entry_ms = 8 [json_name = "endPreStartEntryMS"];
+
+    //The entry offset for each boat from the preparatory signal. Positive = before signal.
+    sint32 port_entry_offset_ms = 9 [json_name = "portEntryOffsetMS"];
+    sint32 stbd_entry_offset_ms = 10 [json_name = "stbdEntryOffsetMS"];
+}
+
+message CrewMember {
+    CrewRole role = 1 [json_name = "role"];
+    oneof person {
+        string name = 2 [json_name = "name"];
+        string person_id = 3 [json_name = "personID"];
+    }
+}
+
+// Race Helpers
+
+enum RaceType {
+    RaceType_Unknown = 0;
+    RaceType_Fleet = 1;
+    RaceType_Match = 2;
+}
+
+enum RaceState {
+    RaceState_Future = 0;
+    RaceState_PreStart = 1;
+    RaceState_Racing = 2;
+    RaceState_Finished = 3;
+    RaceState_Postponed = 4;
+    RaceState_Abandoned = 5;
+}
+
+enum MarkType {
+    MarkType_Generic = 0;
+    MarkType_Reaching = 1;
+    MarkType_Windward = 2;
+    MarkType_Leeward = 3;
+}
+
+enum StartEntry {
+    START_ENTRY_UNKNOWN = 0;
+    START_ENTRY_PORT = 1;
+    START_ENTRY_STARBOARD = 2;
+}
+
+enum MarkRoundingType {
+    MARK_ROUNDING_UNKNOWN = 0;
+    MARK_ROUNDING_TO_PORT = 1;
+    MARK_ROUNDING_TO_STARBOARD = 2;
+}
+
+enum GateRoundingType {
+    GATE_ROUNDING_UNKNOWN = 0;
+    GATE_ROUNDING_LINE = 1;
+    GATE_ROUNDING_TO_OUT = 2;
+    GATE_ROUNDING_TO_IN = 3;
+}
+
+enum ShapeUsage {
+    SHAPE_USAGE_GENERIC = 0;
+    SHAPE_USAGE_ACTUAL = 1;
+    SHAPE_USAGE_SIMPLE = 2;
+    SHAPE_USAGE_SAFETY = 3;
+    SHAPE_USAGE_RULES = 4;
+}
+
+message RaceParticipant {
+    string object_id = 1 [json_name = "objectID"];
+    StartEntry entry = 2 [json_name = "entry"];
+}
+
+message RaceMark {
+    MarkType type = 1 [json_name = "type"];
+    oneof race_mark {
+        Gate gate = 2 [json_name = "gate"];
+        Mark mark = 3 [json_name = "mark"];
+    }
+}
+
+message Mark {
+    string name = 1 [json_name = "name"];
+    string object_id = 2 [json_name = "objectID"];
+    MarkRoundingType rounding_type = 3 [json_name = "roundingType"];
+}
+
+message Gate {
+    string name = 1 [json_name = "name"];
+    Mark one = 2 [json_name = "one"];
+    Mark two = 3 [json_name = "two"];
+    GateRoundingType rounding_type = 4 [json_name = "roundingType"];
+}
