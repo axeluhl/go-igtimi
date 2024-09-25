@@ -24,6 +24,7 @@ jobs:
       run: |
         go install github.com/bufbuild/buf/cmd/buf@v1.42.0
         go get -u golang.org/x/lint/golint
+        go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
         
     - name: Run build
       run: |
