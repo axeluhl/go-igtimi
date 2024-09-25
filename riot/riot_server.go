@@ -42,6 +42,8 @@ func NewServer(ctx context.Context, config ServerConfig) (*Server, error) {
 	return s, nil
 }
 
+// accept accepts incoming connections
+// and creates a new ServerConnection for each
 func (s *Server) accept(ctx context.Context) {
 	for {
 		select {
@@ -64,6 +66,7 @@ func (s *Server) accept(ctx context.Context) {
 	}
 }
 
+// forward a message to all subscribers
 func (s *Server) forward(msg *igtimi.Msg) {
 	s.subscribeMutex.RLock()
 	defer s.subscribeMutex.RUnlock()
@@ -76,12 +79,14 @@ func (s *Server) forward(msg *igtimi.Msg) {
 	}
 }
 
+// addConnection adds a connection to the list of active connections
 func (s *Server) addConnection(c *ServerConnection) {
 	s.connMutex.Lock()
 	defer s.connMutex.Unlock()
 	s.connections = append(s.connections, c)
 }
 
+// removeConnection removes a connection from the list of active connections
 func (s *Server) removeConnection(c *ServerConnection) {
 	s.connMutex.Lock()
 	defer s.connMutex.Unlock()
@@ -122,6 +127,7 @@ func (s *Server) GetConnections() []*ServerConnection {
 	return slices.Clone(s.connections)
 }
 
+// Send sends a message to a specific device
 func (s *Server) Send(serial string, msg *igtimi.Msg) error {
 	s.connMutex.Lock()
 	defer s.connMutex.Unlock()
@@ -148,6 +154,7 @@ type ServerConnection struct {
 	mutex  sync.Mutex
 }
 
+// newServerConnection creates a new ServerConnection
 func newServerConnection(ctx context.Context, conn net.Conn, server *Server) (*ServerConnection, error) {
 	config := server.config
 	ctx, cancel := context.WithCancel(ctx)
@@ -187,13 +194,16 @@ func newServerConnection(ctx context.Context, conn net.Conn, server *Server) (*S
 	return s, nil
 }
 
-func (s *ServerConnection) error(err error) {
+// handleError handles an error encountered during the connection
+// the error is logged and the connection is closed
+func (s *ServerConnection) handleError(err error) {
 	select {
 	case s.errChan <- err:
 	default:
 	}
 }
 
+// read reads messages from the connection
 func (s *ServerConnection) read(ctx context.Context) {
 	rd := bufio.NewReader(s.conn)
 	for {
@@ -205,7 +215,7 @@ func (s *ServerConnection) read(ctx context.Context) {
 		}
 		err := s.codec.Decode(rd, &msg)
 		if err != nil {
-			s.error(fmt.Errorf("decode failed: %w", err))
+			s.handleError(fmt.Errorf("decode failed: %w", err))
 			return
 		}
 
@@ -228,6 +238,7 @@ func (s *ServerConnection) read(ctx context.Context) {
 				}
 			}
 		}
+
 		// store device information
 		if msg.GetDeviceManagement() != nil && msg.GetDeviceManagement().GetUpdateDeviceInformation() != nil {
 			s.mutex.Lock()
@@ -258,7 +269,7 @@ func (s *ServerConnection) heartbeat(ctx context.Context) {
 		}
 		// time out a client if no heartbeat is received
 		if time.Since(lastHeartbeat) > 30*time.Second {
-			s.error(fmt.Errorf("heartbeat timeout"))
+			s.handleError(fmt.Errorf("heartbeat timeout"))
 			return
 		}
 		// send outgoing heartbeat
@@ -268,8 +279,8 @@ func (s *ServerConnection) heartbeat(ctx context.Context) {
 	}
 }
 
+// send heartbeat to the device so it doesn't disconnect
 func (s *ServerConnection) sendHeartbeat() bool {
-	// s.log.Debug("sending heartbeat")
 	err := s.codec.Encode(s.conn, &igtimi.Msg{
 		Msg: &igtimi.Msg_ChannelManagement{
 			ChannelManagement: &igtimi.ChannelManagement{
@@ -280,24 +291,28 @@ func (s *ServerConnection) sendHeartbeat() bool {
 		},
 	})
 	if err != nil {
-		s.error(fmt.Errorf("failed to send heartbeat: %w", err))
+		s.handleError(fmt.Errorf("failed to send heartbeat: %w", err))
 		return false
 	}
 	return true
 }
 
+// GetSerial returns the serial number of the device
+// or nil if the serial number is not yet known
 func (s *ServerConnection) GetSerial() *string {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 	return s.serial
 }
 
+// GetInfo returns the device metadata
 func (s *ServerConnection) GetInfo() map[string]string {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 	return maps.Clone(s.info)
 }
 
+// Send sends a message to the client
 func (s *ServerConnection) Send(msg *igtimi.Msg) error {
 	s.log.Debug("send", "content", msg)
 	err := s.codec.Encode(s.conn, msg)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -13,6 +14,9 @@ import (
 )
 
 func main() {
+	riotAddress := flag.String("riotAddress", ":6000", "Address to listen on for the riot server")
+	webAddress := flag.String("webAddress", ":8080", "Address to listen on for the web interface")
+	flag.Parse()
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
@@ -21,7 +25,7 @@ func main() {
 
 	// example riot server implementation, receiving messages and responding to heartbeats
 	server, err := riot.NewServer(ctx, riot.ServerConfig{
-		Address: ":6000",
+		Address: *riotAddress,
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +33,7 @@ func main() {
 
 	// example webserver for sending commands to devices
 	web := &WebServer{riotServer: server}
-	if err := web.Serve(ctx, ":8080"); err != nil {
+	if err := web.Serve(ctx, *webAddress); err != nil {
 		log.Fatal(err)
 	}
 
