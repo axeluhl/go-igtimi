@@ -1,0 +1,84 @@
+{{define "index"}}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riot Server Demo</title>
+    <script src="/assets/htmx.min.js"></script>
+    <script src="/assets/sse.js"></script>
+    <link rel="stylesheet" href="/assets/pico.cyan.min.css" />
+    <link rel="stylesheet" href="/assets/pico.colors.min.css" />
+    <style type="text/css">
+      body {
+        font-size: 90%;
+      }
+      #log_container {
+        width: 100%;
+        height: 25vw;
+        border: 1px solid black;
+        unicode-bidi: embed;
+        overflow-y: scroll;
+        overflow-x: scroll;
+      }
+      .dot {
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      ul {
+        list-style-type: none;
+      }
+      li > a {
+        text-decoration: none;
+      }
+      .loading {
+        max-width: 50px;
+        list-style-type: none;
+      }
+      .log_msg.debug {
+        color: var(--pico-color-grey-650);
+      }
+      .log_msg.info {
+        color: var(--pico-color-blue-500);
+      }
+      .log_msg.warning {
+        color: var(--pico-color-yellow-500);
+      }
+      .log_msg.error {
+        color: var(--pico-color-red-500);
+      }
+      .log_msg.fatal {
+        color: var(--pico-color-red-900);
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h2>Riot server demo</h2>
+      {{template "devices" .}} {{if ne .Serial "" }} {{template "device" .}}
+      <article
+        id="log_container"
+        hx-ext="sse"
+        sse-connect="/logs?serial={{ .Serial }}"
+        sse-swap="message"
+        hx-swap="beforeend"
+        hx-on:htmx:after-settle="
+      const enabled = document.getElementById('autoscroll_enable').checked;
+      if (enabled) {
+        this.scrollTop = this.scrollHeight;
+      }"
+      ></article>
+      <fieldset>
+        <label>
+          <input id="autoscroll_enable" type="checkbox" role="switch" checked />
+          Autoscroll
+        </label>
+      </fieldset>
+      {{template "command_form" .}} {{end}}
+    </main>
+  </body>
+</html>
+{{end}}

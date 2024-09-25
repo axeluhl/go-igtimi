@@ -1,0 +1,15 @@
+{{define "devices"}}
+<div id="devices" hx-get="/index.html?serial={{.Serial}}" hx-select="#devices" hx-trigger="every 2s">
+    <h3>Devices</h3>
+    <ul>
+{{range $dev := .Devices}}
+     <li><a href="/index.html?serial={{$dev.Serial}}"
+        >{{ $dev.Serial }}</a></li>
+{{end}}
+{{if len .Devices}}
+    {{else}}
+        <li class="loading" aria-busy="true"></li>
+    {{end}}
+    </ul>
+</div>
+{{end}}

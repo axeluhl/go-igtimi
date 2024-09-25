@@ -1,0 +1,10 @@
+{{define "device"}}
+<div id="device" hx-get="/device?serial={{.Serial}}" hx-trigger="every 1s">
+<h3>Device {{.Serial}}</h3>
+{{if .IsOnline }}
+    <p><span class="dot pico-background-green-400"></span> Connected</p>
+{{else}}
+    <p><span class="dot pico-background-red-450"></span> Disconnected</p>
+{{end}}
+</div>
+{{end}}

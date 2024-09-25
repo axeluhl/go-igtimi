@@ -1,0 +1,23 @@
+{{define "command_form"}}
+<div id="command_form">
+    <h3>Commands</h3>
+{{if hasField . "Error"}}
+    {{if ne .Error ""}}
+    <div style="color: red;">{{ .Error }}</div>
+    {{end}}
+{{end}}
+<form hx-post="/command?serial={{ .Serial }}&cmd=log%20cell%20debug&cmd=log%20cell%20block%202"
+    hx-target="#command_form">
+<button type="submit">Enable Logs</button>
+</form>
+<form hx-post="/command?serial={{ .Serial }}&cmd=log%20cell%20block%20off&cmd=log%20cell%20response"
+    hx-target="#command_form">
+<button type="submit">Disable Logs</button>
+</form>
+<h4>Send Command</h4>
+<form hx-post="/command?serial={{ .Serial }}" hx-target="#command_form">
+    <input name="cmd" type="text" value="{{if hasField . "Command"}}{{.Command}}{{end}}">
+    <button type="submit">Submit</button>
+</form>
+</div>
+{{end}}

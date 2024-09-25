@@ -1,0 +1,6 @@
+{{ define "log" }}
+<div>
+    <span>{{ .Timestamp }}</span>
+    <span class="log_msg {{ .Level }}">{{.ShortLevel}} {{ .Message }}</span>
+</div>
+{{ end }}
