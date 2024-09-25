@@ -28,6 +28,6 @@ jobs:
         project_path: "./cmd/riot-server"
         binary_name: "riot-server"
         pre_command: |
-          go install github.com/bufbuild/buf/cmd/buf@v1.42.0
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install github.com/bufbuild/buf/cmd/buf@v1.42.0;
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest;
           buf generate
