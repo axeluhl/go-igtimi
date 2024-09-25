@@ -25,3 +25,8 @@ jobs:
         goversion: 1.23
         project_path: "./cmd/riot-server"
         binary_name: "riot-server"
+        pre_command: |
+          go install github.com/bufbuild/buf/cmd/buf@v1.42.0
+          go get -u golang.org/x/lint/golint
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          buf generate
