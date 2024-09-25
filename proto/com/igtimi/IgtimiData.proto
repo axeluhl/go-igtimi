@@ -6,7 +6,7 @@
  *
  * Author Stephen Markham
  * Date 18/12/2018
- * Copyright 2019, Igtimi Ltd., all rights reserved.
+ * Copyright 2019, Igtimi Ltd.
  * Description
  *    Igtimi API data format, for all data that can be stored using the Igtimi API.
  *
@@ -17,53 +17,54 @@
  */
 
 syntax = "proto3";
-option optimize_for = SPEED;
 
 package com.igtimi;
 
 import "google/protobuf/any.proto";
 
+option optimize_for = SPEED;
+
 //Individual Data Types.
-enum DataType{
-  DATATYPE_NONE  = 0;
-  DATATYPE_POS   = 1;
-  DATATYPE_SATQ  = 2;
-  DATATYPE_SATC  = 3;
-  DATATYPE_LEN   = 4;
-  DATATYPE_ANG   = 5;
-  DATATYPE_COG   = 6;
-  DATATYPE_HDGM  = 7;
-  DATATYPE_HDG   = 8;
-  DATATYPE_SOG   = 9;
-  DATATYPE_STW   = 10;
-  DATATYPE_AWA   = 11;
-  DATATYPE_AWS   = 12;
-  DATATYPE_HR    = 13;
-  DATATYPE_FREQ  = 14;
-  DATATYPE_TEMP  = 15;
-  DATATYPE_File  = 16;
-  DATATYPE_ORI   = 17;
-  DATATYPE_ACC   = 18;
-  DATATYPE_SPD   = 19;
-  DATATYPE_FOR   = 20;
-  DATATYPE_TORQ  = 21;
-  DATATYPE_TWD   = 22;
-  DATATYPE_TWS   = 23;
+enum DataType {
+  DATATYPE_NONE = 0;
+  DATATYPE_POS = 1;
+  DATATYPE_SATQ = 2;
+  DATATYPE_SATC = 3;
+  DATATYPE_LEN = 4;
+  DATATYPE_ANG = 5;
+  DATATYPE_COG = 6;
+  DATATYPE_HDGM = 7;
+  DATATYPE_HDG = 8;
+  DATATYPE_SOG = 9;
+  DATATYPE_STW = 10;
+  DATATYPE_AWA = 11;
+  DATATYPE_AWS = 12;
+  DATATYPE_HR = 13;
+  DATATYPE_FREQ = 14;
+  DATATYPE_TEMP = 15;
+  DATATYPE_File = 16;
+  DATATYPE_ORI = 17;
+  DATATYPE_ACC = 18;
+  DATATYPE_SPD = 19;
+  DATATYPE_FOR = 20;
+  DATATYPE_TORQ = 21;
+  DATATYPE_TWD = 22;
+  DATATYPE_TWS = 23;
   DATATYPE_PRESS = 24;
-  DATATYPE_PWR   = 25;
-  DATATYPE_VOLT  = 26;
-  DATATYPE_AMP   = 27;
-  DATATYPE_TIME  = 28;
-  DATATYPE_NUM   = 50;
-  DATATYPE_INT   = 51;
-  DATATYPE_TXT   = 52;
-  DATATYPE_BOOL  = 53;
-  DATATYPE_JSON  = 54;
+  DATATYPE_PWR = 25;
+  DATATYPE_VOLT = 26;
+  DATATYPE_AMP = 27;
+  DATATYPE_TIME = 28;
+  DATATYPE_NUM = 50;
+  DATATYPE_INT = 51;
+  DATATYPE_TXT = 52;
+  DATATYPE_BOOL = 53;
+  DATATYPE_JSON = 54;
   DATATYPE_EVENT = 55;
-  DATATYPE_LOG   = 56;
-  DATATYPE_CMD   = 57;
-  DATATYPE_SLE   = 100;
-  DATATYPE_COR   = 101;
+  DATATYPE_LOG = 56;
+  DATATYPE_CMD = 57;
+  DATATYPE_SLE = 100;
+  DATATYPE_COR = 101;
 }
 
 // Bit field
@@ -72,87 +73,86 @@ enum DataType{
 // if not set, server will set to LIVE_PERSISTENT (3)
 // *Reserved for future use.
 enum TypeOfService {
-  NOT_SET                           = 0;
-  LIVE_ONLY                         = 1;
-  PERSISTENT_ONLY                   = 2;
-  LIVE_PERSISTENT                   = 3;
+  NOT_SET = 0;
+  LIVE_ONLY = 1;
+  PERSISTENT_ONLY = 2;
+  LIVE_PERSISTENT = 3;
   reserved 4; //UPDATE_ONLY (4) - INVALID
-  LIVE_UPDATE                       = 5;
-  PERSISTENT_UPDATE                 = 6;
-  LIVE_PERSISTENT_UPDATE            = 7;
-  SYNC                              = 8;
-  LIVE_SYNC                         = 9;
-  PERSISTENT_SYNC                   = 10;
-  LIVE_PERSISTENT_SYNC              = 11;
+  LIVE_UPDATE = 5;
+  PERSISTENT_UPDATE = 6;
+  LIVE_PERSISTENT_UPDATE = 7;
+  SYNC = 8;
+  LIVE_SYNC = 9;
+  PERSISTENT_SYNC = 10;
+  LIVE_PERSISTENT_SYNC = 11;
   reserved 12; //UPDATE_SYNC (12) - INVALID
-  LIVE_UPDATE_SYNC                  = 13;
-  PERSISTENT_UPDATE_SYNC            = 14;
-  LIVE_PERSISTENT_UPDATE_SYNC       = 15;
+  LIVE_UPDATE_SYNC = 13;
+  PERSISTENT_UPDATE_SYNC = 14;
+  LIVE_PERSISTENT_UPDATE_SYNC = 15;
   reserved 16; //ACK_ONLY (16) - INVALID
-  LIVE_ACK                          = 17;
-  PERSISTENT_ACK                    = 18;
-  LIVE_PERSISTENT_ACK               = 19;
+  LIVE_ACK = 17;
+  PERSISTENT_ACK = 18;
+  LIVE_PERSISTENT_ACK = 19;
   reserved 20; //UPDATE_ACK (20) - INVALID
-  LIVE_UPDATE_ACK                   = 21;
-  PERSISTENT_UPDATE_ACK             = 22;
-  LIVE_PERSISTENT_UPDATE_ACK        = 23;
+  LIVE_UPDATE_ACK = 21;
+  PERSISTENT_UPDATE_ACK = 22;
+  LIVE_PERSISTENT_UPDATE_ACK = 23;
   reserved 24; //SYNC_ACK (24) - INVALID
-  LIVE_SYNC_ACK                     = 25;
-  PERSISTENT_SYNC_ACK               = 26;
-  LIVE_PERSISTENT_SYNC_ACK          = 27;
+  LIVE_SYNC_ACK = 25;
+  PERSISTENT_SYNC_ACK = 26;
+  LIVE_PERSISTENT_SYNC_ACK = 27;
   reserved 28; //UPDATE_SYNC_ACK (28) - INVALID
-  LIVE_UPDATE_SYNC_ACK              = 29;
-  PERSISTENT_UPDATE_SYNC_ACK        = 30;
-  LIVE_PERSISTENT_UPDATE_SYNC_ACK   = 31;
+  LIVE_UPDATE_SYNC_ACK = 29;
+  PERSISTENT_UPDATE_SYNC_ACK = 30;
+  LIVE_PERSISTENT_UPDATE_SYNC_ACK = 31;
 }
 
-enum SessionLogEntryAction{
-  SLE_ACTION_UNKNOWN  = 0;
+enum SessionLogEntryAction {
+  SLE_ACTION_UNKNOWN = 0;
 
   //Create the entry at the specified timestamp
   //Will fail if the object already exists
-  SLE_ACTION_CREATE   = 1;
+  SLE_ACTION_CREATE = 1;
 
   //Updates an existing entry at specified.
   //Will fail if the object has not been created yet
-  SLE_ACTION_UPDATE   = 2;
+  SLE_ACTION_UPDATE = 2;
 
   //Removes the specified object at the specified timestamp
   //Will fail if the object has not been created yet
-  SLE_ACTION_REMOVE   = 3;
+  SLE_ACTION_REMOVE = 3;
 
   //Deleted the specified object from the log. (As if it had never been created)
   //Will fail if the object has not been created yet
-  SLE_ACTION_DELETE   = 4;
+  SLE_ACTION_DELETE = 4;
 
   //Creates the entry at the specified timestamp or updates it if already present
   //Provides no guarantee that you won't overwrite an existing object by accident
   SLE_ACTION_CREATE_UPDATE = 5;
 }
 
-enum SessionDeviceAction{
-  DEVICE_ACTION_UNKNOWN  = 0;
-  DEVICE_ACTION_ADD      = 1;
-  DEVICE_ACTION_REMOVE   = 2;
+enum SessionDeviceAction {
+  DEVICE_ACTION_UNKNOWN = 0;
+  DEVICE_ACTION_ADD = 1;
+  DEVICE_ACTION_REMOVE = 2;
 }
 
-enum SessionPropertyAction{
-  PROPERTY_ACTION_UNKNOWN  = 0;
-  PROPERTY_ACTION_SET      = 1;
-  PROPERTY_ACTION_DELETE   = 2;
+enum SessionPropertyAction {
+  PROPERTY_ACTION_UNKNOWN = 0;
+  PROPERTY_ACTION_SET = 1;
+  PROPERTY_ACTION_DELETE = 2;
 }
 
-message Data{
+message Data {
   repeated DataMsg data = 1 [json_name = "dm"];
 }
 
-message DataMsg{
-
+message DataMsg {
   //required
   repeated DataPoint data = 1 [json_name = "data"];
 
   // not required (may be determinable from the connection)
-  oneof source{
+  oneof source {
     string serial_number = 2 [json_name = "serial"];
     uint32 session_id = 3 [json_name = "session"];
   }
@@ -162,11 +162,9 @@ message DataMsg{
 
   // not required (can be generated by the server)
   uint32 stream_id = 5 [json_name = "streamID"];
-
 }
 
-message DataPoint{
-
+message DataPoint {
   // not required (unless specified by the application)
   uint32 source_id = 1001 [json_name = "sourceID"];
 
@@ -210,12 +208,10 @@ message DataPoint{
     SessionLogEntry sle = 100 [json_name = "sle"];
     Corrections cor = 101 [json_name = "cor"];
   }
-
 }
 
 //1
 message GNSS_Position {
-
   uint64 timestamp = 1 [json_name = "t"];
 
   // Lat / Lon in decimal degrees
@@ -227,100 +223,76 @@ message GNSS_Position {
 
   //Fields set
   uint32 fields = 15 [json_name = "f"];
-
 }
 
 //2
 message GNSS_Quality {
-
   uint64 timestamp = 1 [json_name = "t"];
   int32 value = 2 [json_name = "val"];
-
 }
 
 //3
 message GNSS_Sat_Count {
-
   uint64 timestamp = 1 [json_name = "t"];
   int32 value = 2 [json_name = "val"];
-
 }
 
 //4
 message Length {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //5
 message Angle {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //6
 message CourseOverGround {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //7
 message HeadingMagnetic {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //8
 message Heading {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //9
 message SpeedOverGround {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //10
 message SpeedThroughWater {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //11
 message ApparentWindAngle {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //12
 message ApparentWindSpeed {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //13
 message HeartRate {
-
   uint64 timestamp = 1 [json_name = "t"];
   uint64 event_time = 2 [json_name = "eventTime"];
   uint32 hb_count = 3 [json_name = "hbCount"];
@@ -330,40 +302,32 @@ message HeartRate {
 
   //Fields set
   uint32 fields = 15 [json_name = "f"];
-
 }
 
 //14
 message Frequency {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //15
 message Temperature {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //16
 message File {
-
   uint64 timestamp = 1 [json_name = "t"];
   uint64 end_time = 2 [json_name = "endTime"];
   string filename = 3 [json_name = "filename"];
   string md5 = 4 [json_name = "md5"];
   string content_type = 5 [json_name = "contentType"];
   uint64 size = 6 [json_name = "size"];
-
 }
 
 //17
 message Orientation {
-
   uint64 timestamp = 1 [json_name = "t"];
   double x = 2 [json_name = "x"];
   double y = 3 [json_name = "y"];
@@ -372,12 +336,10 @@ message Orientation {
 
   //Fields set
   uint32 fields = 15 [json_name = "f"];
-
 }
 
 //18
 message Acceleration {
-
   uint64 timestamp = 1 [json_name = "t"];
   double x = 2 [json_name = "x"];
   double y = 3 [json_name = "y"];
@@ -385,12 +347,10 @@ message Acceleration {
 
   //Fields set
   uint32 fields = 15 [json_name = "f"];
-
 }
 
 //19
 message Speed {
-
   uint64 timestamp = 1 [json_name = "t"];
   double x = 2 [json_name = "x"];
   double y = 3 [json_name = "y"];
@@ -398,12 +358,10 @@ message Speed {
 
   //Fields set
   uint32 fields = 15 [json_name = "f"];
-
 }
 
 //20
 message Force {
-
   uint64 timestamp = 1 [json_name = "t"];
   double x = 2 [json_name = "x"];
   double y = 3 [json_name = "y"];
@@ -411,166 +369,130 @@ message Force {
 
   //Fields set
   uint32 fields = 15 [json_name = "f"];
-
 }
 
 //21
 message Torque {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //22
 message TrueWindDirection {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //23
 message TrueWindSpeed {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //24
 message Pressure {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //25
 message Power {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //26
 message ElectricalPotential {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //27
 message ElectricalCurrent {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //28
 message TimeInterval {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
-
 
 //50
 message Number {
-
   uint64 timestamp = 1 [json_name = "t"];
   double value = 2 [json_name = "val"];
-
 }
 
 //51
 message Integer {
-
   uint64 timestamp = 1 [json_name = "t"];
   uint64 value = 2 [json_name = "val"];
-
 }
 
 //52
 message Text {
-
   uint64 timestamp = 1 [json_name = "t"];
   string value = 2 [json_name = "val"];
-
 }
 
 //53
 message Boolean {
-
   uint64 timestamp = 1 [json_name = "t"];
   bool value = 2 [json_name = "val"];
-
 }
 
 //54
 message JSON {
-
   uint64 timestamp = 1 [json_name = "t"];
   string value = 2 [json_name = "val"];
-
 }
 
 //55
 message Event {
-
   uint64 timestamp = 1 [json_name = "t"];
   google.protobuf.Any event = 2 [json_name = "event"];
-
 }
 
 //56
 message Log {
-
   uint64 timestamp = 1 [json_name = "t"];
   string message = 2 [json_name = "msg"];
   uint32 priority = 3 [json_name = "priority"];
-
 }
 
 //57
 message Command {
-
   uint64 timestamp = 1 [json_name = "t"];
   string value = 2 [json_name = "val"];
-
 }
 
 //100
 message SessionLogEntry {
-
-  message Device{
+  message Device {
     SessionDeviceAction action = 1 [json_name = "action"];
     string id = 2 [json_name = "id"];
     string serial_number = 3 [json_name = "serialNumber"];
   }
 
-  message Property{
+  message Property {
     SessionPropertyAction action = 1 [json_name = "action"];
     string key = 2 [json_name = "key"];
     string value = 3 [json_name = "value"];
   }
 
-  message Hierarchy{
+  message Hierarchy {
     string organizational_unit = 1 [json_name = "ou"];
     uint32 parent_id = 2 [json_name = "parentID"];
   }
 
-  message SessionTime{
+  message SessionTime {
     uint64 start_time = 1 [json_name = "startTime"];
     uint64 end_time = 2 [json_name = "endTime"];
   }
 
-  message CustomEntry{
-
+  message CustomEntry {
     //How should we apply this entry
     SessionLogEntryAction action = 1 [json_name = "action"];
 
@@ -601,7 +523,6 @@ message SessionLogEntry {
   //If the user does not want to provide a proto definition for their objects
   //then they may use the json_data field
   oneof Entry {
-
     string session_name = 4 [json_name = "sessionName"];
 
     SessionTime session_time = 5 [json_name = "sessionTime"];
@@ -618,13 +539,10 @@ message SessionLogEntry {
 
     CustomEntry custom_entry = 15 [json_name = "custom"];
   }
-
 }
 
 //101
 message Corrections {
-
   uint64 timestamp = 1 [json_name = "t"];
   bytes value = 2 [json_name = "val"];
-
 }

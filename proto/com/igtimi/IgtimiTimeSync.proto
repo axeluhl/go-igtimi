@@ -6,7 +6,7 @@
  *
  * Author Stephen Markham
  * Date 01/03/2019
- * Copyright 2019, Igtimi Ltd., all rights reserved.
+ * Copyright 2019, Igtimi Ltd.
  * Description
  *    Protocol definition for using non-standard methods of timesync using Igtimi's services.
  *    The service should *only* be used when UDP is not a viable option as it does not provide the same
@@ -21,24 +21,22 @@
  */
 
 syntax = "proto3";
-option optimize_for = SPEED;
-
-option java_multiple_files = true;
-option java_package = "com.igtimi.timesync.proto";
-option java_outer_classname = "TimeSyncProto";
 
 package com.igtimi;
 
-message SNTPRequest{
+option java_multiple_files = true;
+option java_outer_classname = "TimeSyncProto";
+option java_package = "com.igtimi.timesync.proto";
+option optimize_for = SPEED;
 
-  oneof send_timestamp{
+message SNTPRequest {
+  oneof send_timestamp {
     double seconds_since_1900 = 1 [json_name = "secondsSince1900"];
     uint64 ms_since_1970 = 2 [json_name = "msSince1970"];
   }
-
 }
 
-message NTPResponse{
+message NTPResponse {
   uint32 leap_indicator = 1 [json_name = "leapIndicator"];
   uint32 version = 2 [json_name = "version"];
   uint32 mode = 3 [json_name = "mode"];
@@ -62,5 +60,5 @@ message NTPResponse{
 }
 
 service SNTPTimeSync {
-    rpc SyncTime (SNTPRequest) returns (NTPResponse) {}
+  rpc SyncTime(SNTPRequest) returns (NTPResponse) {}
 }
