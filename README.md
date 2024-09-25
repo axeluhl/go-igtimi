@@ -6,6 +6,7 @@ See ./cmd/riot-server/main.go for the entry point.
 
 ## Tools
 - buf cli - See https://buf.build/docs/installation
+- protoc-gen-go - See https://grpc.io/docs/languages/go/quickstart/
 
 ## Building
 
