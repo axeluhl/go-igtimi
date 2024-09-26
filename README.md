@@ -41,7 +41,11 @@ The server currently does not authenticate devices. It is recommended to add tok
 
 
 ## Protocol
-The devices send messages according to the riot protocol, as defined in [/proto/com/igtimi](/proto/com/igtimi/). The protocol is based on the [protobuf](https://developers.google.com/protocol-buffers) serialization format. Devices connect to the server via a TCP connection (usually on port 6000). The message are sent in a length-prefixed format, where each message is preceded by the length of the message in bytes encoded as a [protobuf Varint](https://protobuf.dev/programming-guides/encoding/#varints).
+The following is a short summary of the most important parts of the protocol. For an in-depth description see [Riot Protocol Documentation](https://support.yacht-bot.com/YachtBot%20Products/Riot%20Protocol/).
+
+The devices send messages according to the riot protocol, as defined in [/proto/com/igtimi](/proto/com/igtimi/). The protocol is based on the [protobuf](https://developers.google.com/protocol-buffers) serialization format.
+
+Devices connect to the server via a TCP connection (usually on port 6000). The message are sent in a length-prefixed format, where each message is preceded by the length of the message in bytes encoded as a [protobuf Varint](https://protobuf.dev/programming-guides/encoding/#varints).
 All messages sent from/to the device must adhere to [*com.igtimi.Msg*](./proto/com/igtimi/IgtimiStream.proto).
 
 ### Acknowledgments
@@ -51,7 +55,7 @@ If the device does not receive a heartbeat message within 30 seconds, it will di
 
 ### Authentication
 The server may authenticate devices based on the so called device group token.
-The token is a string that is sent initially after connection establishment using the [*com.igtimi.Authentication*](/proto/com/igtimi/IgtimiStream.proto) message.
+The token is a string that is sent initially after connection establishment using the [*com.igtimi.Authentication*](/proto/com/igtimi/IgtimiStream.proto) message. 
 
 ### Commands
 The server may send commands to the devices using the [*com.igtimi.DeviceCommand*](/proto/com/igtimi/IgtimiDevice.proto) message.
